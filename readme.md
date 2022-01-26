@@ -11,6 +11,14 @@ All manifests in the git repo are automatically deployed to the EKS cluster
 ## build and deploy the controller
 Use [ko](https://github.com/google/ko) to build and deploy:
 ```bash
-export KO_DOCKER_REPO=foobar.dkr.ecr.eu-west-1.amazonaws.com/crossargo-sync
+
+
+### build Go package and deploy ############
+
+brew install ko
+ko login --username exocode --password # change "exocode" to your username
+export KO_DOCKER_REPO=index.docker.io/exocode/crossargo-sync #  for docker hub
+ko publish . # creates sha digest as tag 
+ko publish . --bare  # creates :latest and not a sha digest
 ko apply -f deployment.yaml
 ```

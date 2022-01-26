@@ -18,7 +18,7 @@ spec:
     spec:
       serviceAccount: crossargo-sync
       containers:
-        - image: github.com/exocode/crossargo-sync
+        - image: exocode/crossargo-sync
           name: crossargo-sync
           resources: {}
 status: {}
