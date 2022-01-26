@@ -199,7 +199,7 @@ func main() {
 									Kind:  "*",
 								},
 							},
-							SourceRepos: []string{"https://github.com/janwillies/gitops-manifests-private"},
+							SourceRepos: []string{"https://github.com/exocode/gitops-manifests-private"},
 							// OrphanedResources: &argo_v1alpha1.OrphanedResourcesMonitorSettings{},
 						},
 					}
@@ -229,12 +229,12 @@ func main() {
 								Server:    server,
 							},
 							// Source: argo_v1alpha1.ApplicationSource{
-							// 	RepoURL:        "https://github.com/janwillies/gitops-manifests-private",
+							// 	RepoURL:        "https://github.com/exocode/gitops-manifests-private",
 							// 	Path:           "user-infra",
 							// 	TargetRevision: "HEAD",
 							// },
 							Source: argo_v1alpha1.ApplicationSource{
-								RepoURL:        "https://github.com/janwillies/gitops-manifests-private",
+								RepoURL:        "https://github.com/exocode/gitops-manifests-private",
 								Path:           "user-infra",
 								TargetRevision: "HEAD",
 							},

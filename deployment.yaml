@@ -18,9 +18,9 @@ spec:
     spec:
       serviceAccount: crossargo-sync
       containers:
-      - image: github.com/janwillies/crossargo-sync
-        name: crossargo-sync
-        resources: {}
+        - image: github.com/exocode/crossargo-sync
+          name: crossargo-sync
+          resources: {}
 status: {}
 ---
 apiVersion: v1
@@ -35,9 +35,9 @@ metadata:
   name: secret-reader
   namespace: user
 rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -45,9 +45,9 @@ metadata:
   name: read-secrets
   namespace: user
 subjects:
-- kind: ServiceAccount
-  name: crossargo-sync
-  namespace: user
+  - kind: ServiceAccount
+    name: crossargo-sync
+    namespace: user
 roleRef:
   kind: Role
   name: secret-reader
@@ -59,9 +59,9 @@ metadata:
   name: secret-writer
   namespace: argocd
 rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["create", "update", "delete", "list"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create", "update", "delete", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -69,9 +69,9 @@ metadata:
   name: write-secrets
   namespace: argocd
 subjects:
-- kind: ServiceAccount
-  name: crossargo-sync
-  namespace: user
+  - kind: ServiceAccount
+    name: crossargo-sync
+    namespace: user
 roleRef:
   kind: Role
   name: secret-writer

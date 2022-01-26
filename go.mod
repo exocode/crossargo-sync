@@ -1,4 +1,4 @@
-module github.com/janwillies/crossargo-sync
+module github.com/exocode/crossargo-sync
 
 go 1.14
 
