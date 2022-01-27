@@ -51,7 +51,10 @@ type AwsAuthConfig struct {
 
 func main() {
 	fmt.Println("Starting main...")
-	os.Environ()
+	for _, e := range os.Environ() {
+		pair := strings.SplitN(e, "=", 2)
+		fmt.Println(pair[0])
+	}
 	// parse commandline flags
 	var region = flag.String("region", "eu-west-1", "AWS Region")
 	var awsAccountID = flag.String("awsaccountid", "018708700358", "AWS account ID (12-digit number)")
