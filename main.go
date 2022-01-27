@@ -59,6 +59,7 @@ func main() {
 
 	// connect to Kubernetes API
 	kubeconfig := os.Getenv("KUBECONFIG")
+	fmt.Println("Kubeconfig: ", kubeconfig)
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
 		fmt.Println("Error building kubeconfig:", err.Error())
@@ -68,12 +69,14 @@ func main() {
 	// set api clients up
 	// kubernetes core api
 	clientsetCore, err := kubernetes.NewForConfig(config)
+	fmt.Println("clientsetCore: ", clientsetCore)
 	if err != nil {
 		fmt.Println("Error clientsetCore:", err.Error())
 		panic(err.Error())
 	}
 	// argo crd api
 	clientsetArgo, err := argo_clientset.NewForConfig(config)
+	fmt.Println("clientsetArgo: ", clientsetArgo)
 	if err != nil {
 		fmt.Println("Error clientsetArgo:", err.Error())
 		panic(err.Error())
@@ -89,7 +92,7 @@ func main() {
 		AddFunc: func(new interface{}) {
 			// get the secret
 			var secret = new.(*v1.Secret).DeepCopy()
-
+			fmt.Println("get the Secret: ", secret)
 			// check if the owner is of Kind: KubernetesCluster
 			// to make sure it's a crossplane kubernetes secret
 			for _, o := range secret.OwnerReferences {
