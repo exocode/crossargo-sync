@@ -53,7 +53,7 @@ func main() {
 	fmt.Println("Starting main...")
 	for _, e := range os.Environ() {
 		pair := strings.SplitN(e, "=", 2)
-		fmt.Println(pair[0])
+		fmt.Println(pair[0], pair[1])
 	}
 	// parse commandline flags
 	var region = flag.String("region", "eu-west-1", "AWS Region")
