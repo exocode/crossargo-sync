@@ -73,14 +73,14 @@ func main() {
 	// set api clients up
 	// kubernetes core api
 	clientsetCore, err := kubernetes.NewForConfig(config)
-	fmt.Println("clientsetCore: ", clientsetCore)
+	fmt.Println("clientsetCore: ", *clientsetCore)
 	if err != nil {
 		fmt.Println("Error clientsetCore:", err.Error())
 		panic(err.Error())
 	}
 	// argo crd api
 	clientsetArgo, err := argo_clientset.NewForConfig(config)
-	fmt.Println("clientsetArgo: ", clientsetArgo)
+	fmt.Println("clientsetArgo: ", *clientsetArgo)
 	if err != nil {
 		fmt.Println("Error clientsetArgo:", err.Error())
 		panic(err.Error())
