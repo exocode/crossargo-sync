@@ -50,7 +50,7 @@ type AwsAuthConfig struct {
 }
 
 func main() {
-
+	fmt.Println("Starting main...")
 	// parse commandline flags
 	var region = flag.String("region", "eu-west-1", "AWS Region")
 	var awsAccountID = flag.String("awsaccountid", "018708700358", "AWS account ID (12-digit number)")
@@ -61,6 +61,7 @@ func main() {
 	kubeconfig := os.Getenv("KUBECONFIG")
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
+		fmt.Println("Error building kubeconfig:", err.Error())
 		panic(err.Error())
 	}
 
@@ -68,11 +69,13 @@ func main() {
 	// kubernetes core api
 	clientsetCore, err := kubernetes.NewForConfig(config)
 	if err != nil {
+		fmt.Println("Error clientsetCore:", err.Error())
 		panic(err.Error())
 	}
 	// argo crd api
 	clientsetArgo, err := argo_clientset.NewForConfig(config)
 	if err != nil {
+		fmt.Println("Error clientsetArgo:", err.Error())
 		panic(err.Error())
 	}
 
@@ -99,14 +102,19 @@ func main() {
 					// extract data from crossplane secret
 					var data = *&secret.Data
 					for k, v := range data {
+						fmt.Println("switch")
+						fmt.Println(k)
 						switch k {
 						case "kubeconfig":
 							var kubeConfig KubeConfig
 							err := yaml.Unmarshal(v, &kubeConfig)
 							if err != nil {
+								fmt.Println("not nil error")
 								fmt.Println(err)
 								return
 							}
+							fmt.Println("kubeConfig")
+							fmt.Println(kubeConfig)							
 							// The context is named after the aws eks clustername
 							argoEksConfig.AwsAuthConfig.ClusterName = kubeConfig.CurrentContext
 						case "clusterCA":
@@ -119,6 +127,7 @@ func main() {
 					}
 					argoEksConfigJSON, err := json.Marshal(argoEksConfig)
 					if err != nil {
+						fmt.Println("err argoEksConfigJSON")
 						fmt.Println(err)
 						return
 					}
@@ -156,6 +165,7 @@ func main() {
 					secretOut, err := clientsetCore.CoreV1().Secrets("argocd").Create(&secret)
 					if err != nil {
 						fmt.Println(err)
+						fmt.Println("err secretOut")
 					} else {
 						fmt.Println("Added cluster", secretOut.GetName())
 					}
@@ -205,7 +215,9 @@ func main() {
 					}
 					argoProjectOut, err := clientsetArgo.ArgoprojV1alpha1().AppProjects("argocd").Create(&argoProject)
 					if err != nil {
+						fmt.Println("err argoProjectOut")
 						fmt.Println(err)
+						
 					} else {
 						fmt.Println("Added project", argoProjectOut.GetName())
 					}
@@ -248,6 +260,7 @@ func main() {
 					}
 					argoApplicationOut, err := clientsetArgo.ArgoprojV1alpha1().Applications("argocd").Create(&argoApplication)
 					if err != nil {
+						fmt.Println("err argoApplicationOut")
 						fmt.Println(err)
 					} else {
 						fmt.Println("Added application", argoApplicationOut.GetName())
@@ -281,6 +294,7 @@ func main() {
 							var kubeConfig KubeConfig
 							err := yaml.Unmarshal(v, &kubeConfig)
 							if err != nil {
+								fmt.Println("case kubeconfig")
 								fmt.Println(err)
 								return
 							}
@@ -291,18 +305,21 @@ func main() {
 
 					err = clientsetArgo.ArgoprojV1alpha1().Applications("argocd").Delete("infra-"+namespace()+"-"+clusterName, &metav1.DeleteOptions{})
 					if err != nil {
+						fmt.Println("err clientsetArgo Applications")
 						fmt.Println(err)
 					}
 					fmt.Println("Deleted application", "infra-"+namespace()+"-"+clusterName)
 
 					err = clientsetArgo.ArgoprojV1alpha1().AppProjects("argocd").Delete(namespace()+"-"+clusterName, &metav1.DeleteOptions{})
 					if err != nil {
+						fmt.Println("err clientsetArgo AppProjects")
 						fmt.Println(err)
 					}
 					fmt.Println("Deleted project", namespace()+"-"+clusterName)
 
 					err = clientsetCore.CoreV1().Secrets("argocd").Delete(namespace()+"-"+clusterName, &metav1.DeleteOptions{})
 					if err != nil {
+						fmt.Println("err clientsetCore Secrets")
 						fmt.Println(err)
 					}
 					fmt.Println("Deleted cluster", namespace()+"-"+clusterName)
