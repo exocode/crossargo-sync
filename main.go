@@ -51,6 +51,7 @@ type AwsAuthConfig struct {
 
 func main() {
 	fmt.Println("Starting main...")
+	os.Environ()
 	// parse commandline flags
 	var region = flag.String("region", "eu-west-1", "AWS Region")
 	var awsAccountID = flag.String("awsaccountid", "018708700358", "AWS account ID (12-digit number)")
@@ -97,7 +98,7 @@ func main() {
 			// to make sure it's a crossplane kubernetes secret
 			for _, o := range secret.OwnerReferences {
 				if o.Kind == "KubernetesCluster" {
-
+					fmt.Println("kind is KubernetesCluster")
 					// prepare argo config
 					argoEksConfig := ArgoEksConfig{}
 					var server string
