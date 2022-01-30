@@ -22,10 +22,8 @@ spec:
           name: crossargo-sync
           resources: {}
           env: # namespace where to search for kubeconfig secrets
-            - name: POD_NAMESPACE
-              value: "default"
             - name: CREDENTIAL_NAMESPACE
-              value: "crossplane-system"
+              value: "default"
 status: {}
 ---
 apiVersion: v1
