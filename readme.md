@@ -14,7 +14,7 @@ Use [ko](https://github.com/google/ko) to build and deploy:
 
 
 ### build Go package and deploy ############
-
+<https://cloud.google.com/blog/topics/developers-practitioners/ship-your-go-applications-faster-cloud-run-ko>
 brew install ko
 ko login --username exocode --password # change "exocode" to your username
 export KO_DOCKER_REPO=index.docker.io/exocode/crossargo-sync #  for docker hub
