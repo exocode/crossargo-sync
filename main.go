@@ -66,6 +66,9 @@ func main() {
 	rules := clientcmd.NewDefaultClientConfigLoadingRules()
 	myKubeconfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(rules, &clientcmd.ConfigOverrides{})
 	myconfig, err := myKubeconfig.ClientConfig()
+	if err != nil {
+		panic(err.Error())
+	}
 	clientset := kubernetes.NewForConfigOrDie(myconfig)
 	secretList, err := clientset.CoreV1().Secrets("crossplane-system").List(metav1.ListOptions{})
 
@@ -79,7 +82,6 @@ func main() {
 			var authToken string = string(secret.Data["authToken"])
 			bearerToken = authToken
 		}
-
 	}
 
 	informer.AddEventHandler(cache.ResourceEventHandlerFuncs{
