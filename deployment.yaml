@@ -87,7 +87,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: kubeconfig-reader
-  namespace: default
+  namespace: crossplane-system # where the argocd-credentials with authToken are stored
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -97,7 +97,33 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: read-kubeconfigs
-  namespace: default
+  namespace: crossplane-system # where the argocd-credentials with authToken are stored
+subjects:
+  - kind: ServiceAccount
+    name: crossargo-sync
+    namespace: user
+roleRef:
+  kind: Role
+  name: kubeconfig-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+#################################################################################
+# add role and rolebinding to access the namespace where kubeconfigs are stored
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kubeconfig-reader
+  namespace: default # namespace where to search for kubeconfig secrets
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-kubeconfigs
+  namespace: default # namespace to search for kubeconfig secrets
 subjects:
   - kind: ServiceAccount
     name: crossargo-sync
