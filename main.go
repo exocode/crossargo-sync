@@ -8,6 +8,10 @@ import (
 	"os"
 	"strings"
 
+	argo_clientset "github.com/argoproj/argo-cd/pkg/client/clientset/versioned"
+
+	// argo_cluster "github.com/crossplane-contrib/provider-argoc/cluster/v1alpha1"
+
 	"github.com/jamiealquiza/envy"
 
 	v1 "k8s.io/api/core/v1"
@@ -33,7 +37,6 @@ type TLSClientConfig struct {
 
 func main() {
 	fmt.Println("Starting main...")
-
 	envy.Parse("ARGOCROSS")
 	flag.Parse()
 
@@ -51,6 +54,15 @@ func main() {
 	clientsetCore, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		fmt.Println("Error clientsetCore:", err.Error())
+		panic(err.Error())
+	}
+
+	// argo crd api
+	clientsetArgo, err := argo_clientset.NewForConfig(config)
+	fmt.Println("clientsetArgo: ", clientsetArgo)
+	// fmt.Println("clientsetArgo*: ", *clientsetArgo)
+	if err != nil {
+		fmt.Println("Error clientsetArgo:", err.Error())
 		panic(err.Error())
 	}
 
@@ -81,6 +93,8 @@ func main() {
 		if len(secret.Data["authToken"]) != 0 {
 			var authToken string = string(secret.Data["authToken"])
 			bearerToken = authToken
+		} else {
+			// fmt.Println("Skipped secret: ", secret.Name)
 		}
 	}
 
@@ -167,6 +181,151 @@ func main() {
 				fmt.Println("Successfully created cluster credentials: ", secretOut.GetName())
 			}
 
+			// argoCluster := argo_cluster.Cluster()
+			// fmt.Println()
+			// argoCluster.Cluster{
+			// 	Server: clusterIP,
+			// 	Name:   argoClusterName, // cpSecret.GetName(),
+			// 	Config: argo_v1alpha1.ClusterConfig{
+			// 		BearerToken: bearerToken,
+			// 	},
+			// }
+			// fmt.Println("argoCluster: ", argoCluster)
+			// argo_cluster.Add(argoCluster)
+			// argoClusterOut, err := clientsetArgo.ArgoprojV1alpha1() // . ("argocd").Create(&argoCluster)
+
+			// if err != nil {
+			// 	fmt.Println("err argoProjectOut")
+			// 	fmt.Println(err)
+
+			// } else {
+			// 	fmt.Println("Added project", argoClusterOut.GetName())
+			// }
+
+			// // initial argo project
+			// argoProject := argo_v1alpha1.AppProject{
+			// 	TypeMeta: metav1.TypeMeta{
+			// 		Kind:       "AppProject",
+			// 		APIVersion: "argoproj.io/v1alpha1",
+			// 	},
+			// 	ObjectMeta: metav1.ObjectMeta{
+			// 		Name: namespace(), // + "-" + argoCrossplaneConfig.AwsAuthConfig.ClusterName,
+			// 	},
+			// 	Spec: argo_v1alpha1.AppProjectSpec{
+			// 		Description: argoClusterName + "Civo cluster owned by " + namespace(),
+			// 		Destinations: []argo_v1alpha1.ApplicationDestination{
+			// 			argo_v1alpha1.ApplicationDestination{
+			// 				Namespace: "istio-system",
+			// 				Server:    clusterIP,
+			// 			},
+			// 			argo_v1alpha1.ApplicationDestination{
+			// 				Namespace: "istio-operator",
+			// 				Server:    clusterIP,
+			// 			},
+			// 		},
+			// 		ClusterResourceWhitelist: []metav1.GroupKind{
+			// 			metav1.GroupKind{
+			// 				Group: "*",
+			// 				Kind:  "*",
+			// 			},
+			// 		},
+			// 		SourceRepos: []string{"https://github.com/exocode/gitops"},
+			// 		// OrphanedResources: &argo_v1alpha1.OrphanedResourcesMonitorSettings{},
+			// 	},
+			// }
+			// argoProjectOut, err := clientsetArgo.ArgoprojV1alpha1().AppProjects("argocd").Create(&argoProject)
+			// if err != nil {
+			// 	fmt.Println("err argoProjectOut")
+			// 	fmt.Println(err)
+
+			// } else {
+			// 	fmt.Println("Added project", argoProjectOut.GetName())
+			// }
+
+			// // initial argo project
+			// argoProject := argo_v1alpha1.AppProject{
+			// 	TypeMeta: metav1.TypeMeta{
+			// 		Kind:       "AppProject",
+			// 		APIVersion: "argoproj.io/v1alpha1",
+			// 	},
+			// 	ObjectMeta: metav1.ObjectMeta{
+			// 		Name: namespace(), // + "-" + argoCrossplaneConfig.AwsAuthConfig.ClusterName,
+			// 	},
+			// 	Spec: argo_v1alpha1.AppProjectSpec{
+			// 		Description: argoClusterName + "Civo cluster owned by " + namespace(),
+			// 		Destinations: []argo_v1alpha1.ApplicationDestination{
+			// 			argo_v1alpha1.ApplicationDestination{
+			// 				Namespace: "istio-system",
+			// 				Server:    clusterIP,
+			// 			},
+			// 			argo_v1alpha1.ApplicationDestination{
+			// 				Namespace: "istio-operator",
+			// 				Server:    clusterIP,
+			// 			},
+			// 		},
+			// 		ClusterResourceWhitelist: []metav1.GroupKind{
+			// 			metav1.GroupKind{
+			// 				Group: "*",
+			// 				Kind:  "*",
+			// 			},
+			// 		},
+			// 		SourceRepos: []string{"https://github.com/exocode/gitops"},
+			// 		// OrphanedResources: &argo_v1alpha1.OrphanedResourcesMonitorSettings{},
+			// 	},
+			// }
+			// argoProjectOut, err := clientsetArgo.ArgoprojV1alpha1().AppProjects("argocd").Create(&argoProject)
+			// if err != nil {
+			// 	fmt.Println("err argoProjectOut")
+			// 	fmt.Println(err)
+
+			// } else {
+			// 	fmt.Println("Added project", argoProjectOut.GetName())
+			// }
+
+			// // intial argo application
+			// argoApplication := argo_v1alpha1.Application{
+			// 	TypeMeta: metav1.TypeMeta{
+			// 		// Kind:       argo_v1alpha1.ApplicationSchemaGroupVersionKind.String(),
+			// 		// APIVersion: argo_v1alpha1.AppProjectSchemaGroupVersionKind.GroupVersion().Identifier(),
+			// 		Kind:       "Application",
+			// 		APIVersion: "argoproj.io/v1alpha1",
+			// 	},
+			// 	ObjectMeta: metav1.ObjectMeta{
+			// 		Name: "infra-" + namespace() + "-" + argoClusterName,
+			// 		// Finalizers: []string{"resources-finalizer.argocd.argoproj.io"},
+			// 	},
+			// 	Spec: argo_v1alpha1.ApplicationSpec{
+			// 		Project: namespace() + "-" + argoClusterName,
+			// 		Destination: argo_v1alpha1.ApplicationDestination{
+			// 			Namespace: "staging",
+			// 			Server:    clusterIP,
+			// 		},
+			// 		// Source: argo_v1alpha1.ApplicationSource{
+			// 		// 	RepoURL:        "https://github.com/exocode/gitops",
+			// 		// 	Path:           "user-infra",
+			// 		// 	TargetRevision: "HEAD",
+			// 		// },
+			// 		Source: argo_v1alpha1.ApplicationSource{
+			// 			RepoURL:        "https://github.com/exocode/gitops",
+			// 			Path:           "",
+			// 			TargetRevision: "HEAD",
+			// 		},
+			// 		SyncPolicy: &argo_v1alpha1.SyncPolicy{
+			// 			Automated: &argo_v1alpha1.SyncPolicyAutomated{
+			// 				Prune:    true,
+			// 				SelfHeal: true,
+			// 			},
+			// 		},
+			// 	},
+			// }
+			// argoApplicationOut, err := clientsetArgo.ArgoprojV1alpha1().Applications("argocd").Create(&argoApplication)
+			// if err != nil {
+			// 	fmt.Println("err argoApplicationOut")
+			// 	fmt.Println(err)
+			// } else {
+			// 	fmt.Println("Added application", argoApplicationOut.GetName())
+			// }
+			// }
 		},
 		// TODO: Implement update function
 		UpdateFunc: func(old interface{}, new interface{}) {
@@ -180,6 +339,25 @@ func main() {
 	})
 
 	informer.Run(stopper)
+}
+
+// get current namespace
+func namespace() string {
+	// This way assumes you've set the POD_NAMESPACE environment variable using the downward API.
+	// This check has to be done first for backwards compatibility with the way InClusterConfig was originally set up
+	if ns, ok := os.LookupEnv("CREDENTIAL_NAMESPACE"); ok {
+		return ns
+	}
+
+	// Fall back to the namespace associated with the service account token, if available
+	if data, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/namespace"); err == nil {
+		fmt.Println("data", data)
+		if ns := strings.TrimSpace(string(data)); len(ns) > 0 {
+			return ns
+		}
+	}
+
+	return "default"
 }
 
 // get env namespace where to find kubeconfig
